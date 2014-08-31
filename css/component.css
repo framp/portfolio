@@ -265,10 +265,6 @@
   text-transform: uppercase;
 }
 
-.bk-book .bk-cover .view-desktop{
-  display: none;
-}
-
 .bk-book .bk-content p {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
@@ -380,13 +376,22 @@
 	display: none;
 }
 
-@media (max-width: 730px) {
-  .bk-cover:after, .bk-back:after{
-    width: 0px;
+@media (max-width: 700px) { 
+  body{
+    font-size: 50%;
+  }
+  
+  .bk-book .bk-cover .bk-title div {
+    width: 184px;
   }
 }
-@media (max-width: 700px) {
-  /*.view-desktop{
-    display: block;
-  }*/
+
+@media (max-width: 430px) { 
+  body{
+    font-size: 35%;
+  }
+  
+  .bk-book .bk-cover .bk-title div {
+    width: 128px;
+  }
 }
