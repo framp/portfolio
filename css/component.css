@@ -265,6 +265,10 @@
   text-transform: uppercase;
 }
 
+.bk-book .bk-cover .view-desktop{
+  display: none;
+}
+
 .bk-book .bk-content p {
 	font-family: Georgia, Times, "Times New Roman", serif;
 }
@@ -380,4 +384,9 @@
   .bk-cover:after, .bk-back:after{
     width: 0px;
   }
+}
+@media (max-width: 700px) {
+  /*.view-desktop{
+    display: block;
+  }*/
 }
