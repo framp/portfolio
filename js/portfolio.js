@@ -122,16 +122,34 @@ bookBlock.children().add(backCoverBookBlock.children()).on({
   }
 });
 
-bookBlock.bookblock( {
-  speed : 800,
-  shadow : false,
+bookBlock.bookblock({
+  speed: 800,
+  shadow: false
 });
-backCoverBookBlock.bookblock( {
-  speed : 800,
-  shadow : false,
+backCoverBookBlock.bookblock({
+  speed: 800,
+  shadow: false
 });
 
-$(document).keydown( function(e) {
+var throttleFunc = function(func, limit, limitQueue){
+  var lastTime = + new Date;
+  var queued = 0;
+  return function throttledFunc(){
+    var now = + new Date;
+    var args = Array.prototype.slice.call(arguments);
+    if (now - lastTime > limit){
+      func.apply(this, args);
+      lastTime = + new Date;
+    }else{
+      var boundFunc = throttledFunc.bind.apply(throttledFunc, [this].concat(args));
+      queued++;
+      if (queued<limitQueue)
+        window.setTimeout(boundFunc, lastTime+limit-now);
+    }
+  }
+}
+
+$(document).keydown(throttleFunc(function(e) {
   var keyCode = e.keyCode || e.which,
     arrow = {
       left : 37,
@@ -148,4 +166,4 @@ $(document).keydown( function(e) {
       bookBlockNext();
       break;
   }
-});
+}, 500, 2));
