@@ -5,40 +5,42 @@ var viewBackLink = book.find('.bk-bookback');
 var changeColorLink = book.find('.change-color');
 var colorContainers = book.find('.color-container');
 
-book.data({ opened : false, flip : false });
+var bookDefault = function(){
+  book.data({ opened : false, flip : false })
+      .removeClass('bk-viewback bk-viewinside')
+      .addClass('bk-bookdefault');
+};
+var bookBack = function(){
+  book.data({ opened : false, flip : true })
+      .removeClass('bk-viewinside bk-bookdefault')
+      .addClass('bk-viewback');
+};
+var bookInside = function(){
+  book.data({ opened : true, flip : false })
+      .removeClass('bk-viewback bk-bookdefault')
+      .addClass( 'bk-viewinside');
+};
+
+bookDefault();
 
 viewBackLink.on('click', function(){
   if(book.data('flip')){
-    book.data({ opened : false, flip : false })
-        .removeClass('bk-viewback')
-        .addClass('bk-bookdefault');
+    bookDefault();
   }else{
-    book.data({ opened : false, flip : true })
-        .removeClass('bk-viewinside bk-bookdefault')
-        .addClass('bk-viewback');
+    bookBack();
   }
   return false;
 });
 
 viewBookLink.on('click', function(){
-  if( book.data('opened')){
-    book.data({ opened : false, flip : false })
-        .removeClass( 'bk-viewinside')
-        .addClass('bk-bookdefault');
-  }else{
-    book.data({ opened : true, flip : false })
-        .removeClass('bk-viewback bk-bookdefault')
-        .addClass( 'bk-viewinside');
-  }
+  bookInside();
   return false;
 });
 
 //Detect click outside book
 $('html').on( 'click', function(event) {
   if ($(event.target).parents('.bk-book').length == 0){
-    book.data({ opened : false, flip : false })
-        .removeClass('bk-viewback bk-viewinside')
-        .addClass('bk-bookdefault');
+    bookDefault();
     if (!colorContainers.hasClass('hidden'))
       changeColorLink.click();
   }
@@ -71,23 +73,51 @@ var backCover = bookBlock.parents('.bk-book').find('.bk-cover-back');
 var backCoverBookBlock = bookBlock.clone();
 backCoverBookBlock.appendTo(backCover);
 
+var bookBlockFirst = function(){
+  bookBlock.bookblock('first');
+  backCoverBookBlock.bookblock('first');
+}
+var bookBlockLast = function(){
+  bookBlock.bookblock('last');
+  backCoverBookBlock.bookblock('last');
+}
+
+var bookBlockLastIndex = bookBlock.children().length-1;
+var bookBlockNext = function(){
+  if (book.data('flip'))
+    return bookDefault();
+  if(!book.data('opened'))
+    return bookInside();
+  if (bookBlock.find('.bb-item:visible').index()===bookBlockLastIndex)
+    return bookBack() + bookBlockFirst();
+  bookBlock.bookblock('next');
+  backCoverBookBlock.bookblock('next');
+}
+var bookBlockPrev = function(){
+  if (book.data('flip'))
+    return bookBlockLast()+bookInside();
+  if(!book.data('opened'))
+    return bookBack();
+  if (bookBlock.find('.bb-item:visible').index()===0)
+    return bookDefault();
+  bookBlock.bookblock('prev');
+  backCoverBookBlock.bookblock('prev');
+}
+
 bookBlock.children().add(backCoverBookBlock.children()).on({
   'swipeleft': function(event) {
-    bookBlock.bookblock('next');
-    backCoverBookBlock.bookblock('next');
+    bookBlockPrev();
     return false;
   },
   'swiperight': function(event) {
-    bookBlock.bookblock('prev');
-    backCoverBookBlock.bookblock('prev');
+    bookBlockPrev();
     return false;
   },
   'click': function(event){
-    var direction = 'prev';
     if ($(event.target).parents('.bk-cover-back').length == 0)
-      direction = 'next';
-    bookBlock.bookblock(direction);
-    backCoverBookBlock.bookblock(direction);
+      bookBlockNext();
+    else
+      bookBlockPrev();
     return false;
   }
 });
@@ -112,18 +142,10 @@ $(document).keydown( function(e) {
 
   switch (keyCode) {
     case arrow.left:
-      bookBlock.bookblock('prev');
-      backCoverBookBlock.bookblock('prev');
+      bookBlockPrev();
       break;
     case arrow.right:
-      if(!book.data('opened')){
-        book.data({ opened : true, flip : false })
-            .removeClass('bk-viewback bk-bookdefault')
-            .addClass( 'bk-viewinside');
-      }else{
-        bookBlock.bookblock('next');
-        backCoverBookBlock.bookblock('next');
-      }
+      bookBlockNext();
       break;
   }
-} );
+});
