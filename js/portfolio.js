@@ -112,10 +112,12 @@ $(document).keydown( function(e) {
 
   switch (keyCode) {
     case arrow.left:
-      bookBlock.bookblock( 'prev' );
+      bookBlock.bookblock('prev');
+      backCoverBookBlock.bookblock('prev');
       break;
     case arrow.right:
-      bookBlock.bookblock( 'next' );
+      bookBlock.bookblock('next');
+      backCoverBookBlock.bookblock('prev');
       break;
   }
 } );
