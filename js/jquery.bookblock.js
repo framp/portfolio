@@ -31,6 +31,10 @@
 
 		return (computedStyle === val);
 	});
+  
+  Modernizr.addTest('firefox', function () {
+    return !!navigator.userAgent.match(/firefox/i);
+  });
 
 	/*
 	* debouncedresize: special jQuery event that happens once after a window resize
@@ -154,7 +158,7 @@
 			};
 			this.transEndEventName = transEndEventNames[Modernizr.prefixed( 'transition' )] + '.bookblock';
 			// support css 3d transforms && css transitions && Modernizr.csstransformspreserve3d
-			this.support = Modernizr.csstransitions && Modernizr.csstransforms3d && Modernizr.csstransformspreserve3d;
+			this.support = Modernizr.csstransitions && Modernizr.csstransforms3d && Modernizr.csstransformspreserve3d && !Modernizr.firefox;
 			// initialize/bind some events
 			this._initEvents();
 			// start slideshow
