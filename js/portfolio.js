@@ -21,7 +21,7 @@ viewBackLink.on('click', function(){
 });
 
 viewBookLink.on('click', function(){
-  if( book.data('opened' )){
+  if( book.data('opened')){
     book.data({ opened : false, flip : false })
         .removeClass( 'bk-viewinside')
         .addClass('bk-bookdefault');
@@ -116,8 +116,12 @@ $(document).keydown( function(e) {
       backCoverBookBlock.bookblock('prev');
       break;
     case arrow.right:
+      if(!book.data('opened'))
+        book.data({ opened : true, flip : false })
+            .removeClass('bk-viewback bk-bookdefault')
+            .addClass( 'bk-viewinside');
       bookBlock.bookblock('next');
-      backCoverBookBlock.bookblock('prev');
+      backCoverBookBlock.bookblock('next');
       break;
   }
 } );
